@@ -1,44 +1,20 @@
-<?php	
+<?php
 	include("php/config.php");
-	$infostr="";
-	$login_sucess=false;
 	
-	//if login
-	if(isset($_POST['user_name'])){
+	if(isset($_GET['ran'])){$ran=$_GET['ran'];}
+	if(isset($_POST['ran'])){$ran=$_POST['ran'];}
+	
+	$sqlx="SELECT * FROM user WHERE usr_ran='".$ran."';";
+	$result=mysqli_query($db, $sqlx); 
+	if(mysqli_num_rows($result) > 0){
+		$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
+		$usr_type=$row['usr_type'];
+		$usr_name=$row['usr_name'];
+		if($usr_type=="admin"){
 		
-		$usr_name=$_POST['user_name'];
-		$pwd=$_POST['password'];
-		$sql="select * from user where usr_name='". $usr_name. "' AND usr_pwd='". $pwd ."';";
-					
-		$result=mysqli_query($db,$sql);			
-		if(mysqli_num_rows($result) > 0){	
-			$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-			$usr_id=$row['usr_id'];
-			$usr_type=$row['usr_type'];
-			$login_sucess=true;	
-			$ran=get_ran10();
-
-			$sql="update user SET ".
-					" usr_ran='". $ran ."'".
-					" Where usr_id='".$usr_id ."'";
-			$updt=mysqli_query($db, $sql);			
-		}else{
-			
-			echo "<script language=\"javascript\">";
-			echo "alert(\"Invalid  User Name or Password\")";
-			echo "</script>";	
-			
-			$infostr="Invalid User Name or Password";
-			header("Location: login.php?infostr=".$infostr);
+		
 		}
-				
-	//if  send page	
-	}else{
-		$login_sucess=false;
-		$infostr="Invalid User Name or Password";
-		header("Location: login.php?infostr=".$infostr);	
-	}			
-
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -55,7 +31,7 @@
 	<div class="wrapper">
 		<div class="main-header">
 			<div class="logo-header">
-				<a href="dash.php" class="logo">
+				<a href="index.php" class="logo">
 					<img align ='center' width="180" height="60"src="assets/img/tot-inno.png">	
 				</a>
 				<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,14 +57,14 @@
 						<li class="nav-item dropdown hidden-caret"></li>
 						<li class="nav-item dropdown hidden-caret"></li>
 						<li class="nav-item dropdown">
-							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false"> <img src="assets/img/logo_admin.jpg" alt="user-img" width="36" class="img-circle"><span ><?php echo $usr_name ?></span></span> </a>
+							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false"> <img src="assets/img/logo_admin.jpg" alt="user-img" width="36" class="img-circle"><span ><?php echo $usr_name; ?></span></span> </a>
 							<ul class="dropdown-menu dropdown-user">
 								<li>
 									<div class="user-box">
 										<div class="u-img"><img src="assets/img/logo_admin.jpg" alt="user"></div>
 										<div class="u-text">
-											<h4><?php echo $usr_name ?></h4>
-											<p class="text-muted"><?php echo $usr_type ?></p></div>
+											<h4><?php echo $usr_name; ?></h4>
+											<p class="text-muted"><?php echo $usr_type; ?></p></div>
 										</div>
 									</li>
 								
@@ -106,7 +82,7 @@
 			<div class="sidebar">
 				<div class="scrollbar-inner sidebar-wrapper">
 					<ul class="nav">
-						<li class="nav-item active">
+						<li class="nav-item">
 							<?php	
 								echo "	<a href=\"dash.php?ran=".$ran."\">"; 
 								echo "	<i class=\"la la-users\"></i>";
@@ -122,7 +98,7 @@
 								echo "	</a>";
 							?>
 						</li>
-						<li class="nav-item">
+						<li class="nav-item  active">
 							<?php	
 								echo "	<a href=\"setting.php?ran=".$ran."\">"; 
 								echo "	<i class=\"la la-keyboard-o\"></i>";
@@ -132,116 +108,83 @@
 							
 						</li>
 						
-						
 					</ul>
 				</div>
 			</div>
 			<div class="main-panel">
 				<div class="content">
 					<div class="container-fluid">
-						<h4 class="page-title">Commu. Pole</h4>
-						<div class="row">
-							<div class="col-md-3">
-								<div class="card card-stats card-danger">
-									<div class="card-body">
-										<div class="row">
-											<div class="col-5">
-												<div class="icon-big text-center">
-													<i class="la la-line-chart"></i>
-												</div>
-											</div>
-											<div class="col-7 d-flex align-items-center">
-												<div class="numbers">
-													<p class="card-category">Critical</p>
-													<h4 class="card-title">3</h4>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-3">
-								<div class="card card-stats card-warning">
-									<div class="card-body ">
-										<div class="row">
-											<div class="col-5">
-												<div class="icon-big text-center">
-													<i class="la la-bell"></i>
-												</div>
-											</div>
-											<div class="col-7 d-flex align-items-center">
-												<div class="numbers">
-													<p class="card-category">Warning</p>
-													<h4 class="card-title">294</h4>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-3">
-								<div class="card card-stats card-success">
-									<div class="card-body ">
-										<div class="row">
-											<div class="col-5">
-												<div class="icon-big text-center">
-													<i class="la la-bar-chart"></i>
-												</div>
-											</div>
-											<div class="col-7 d-flex align-items-center">
-												<div class="numbers">
-													<p class="card-category">Normal</p>
-													<h4 class="card-title">345</h4>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="col-md-3">
-								<div class="card card-stats card-primary">
-									<div class="card-body ">
-										<div class="row">
-											<div class="col-5">
-												<div class="icon-big text-center">
-													<i class="la la-check-circle"></i>
-												</div>
-											</div>
-											<div class="col-7 d-flex align-items-center">
-												<div class="numbers">
-													<p class="card-category">total</p>
-													<h4 class="card-title">576</h4>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
 						
-							<div class="col-md-12">
-								<div class="card">
-									<div class="card-header">
-										<h4 class="card-title">SmartPole Map</h4>
-										<p class="card-category">
-										Map of the distribution of users around the world</p>
-									</div>
-									<div class="card-body">
+										<div class="row">
 											
-									        <iframe target="_blank" src="http://mkss.co.th/pole/php/map.php?ran=".$ran."" width="100%" height="500" style="border:none;">
-</iframe>
-										
-									</div>
-								</div>
-							</div>
-							
-						</div>
+											<div class="col-md-12">
+												<div class="card">
+													<div class="card-header">
+														<h4 class="card-title">System Setting</h4>
+													
+													</div>
+													<div class="card-body">
+														<h4 class="card-title">Commu. Pole List</h4>
+														<div class="form-group form-inline">
+															<label for="inlineinput" class="col-md-3 col-form-label">Refresh Interval</label>
+															<div class="col-md-9 p-0">
+																<input type="text" class="form-control input-full" id="rf" placeholder="30 sec">
+															</div>
+															
+														</div>
+																								
+															 <a href="add_setting.php">Add</a>
+														
+														<table class="table table-striped mt-3">
+															<thead>
+																<tr>
+																	<th scope="col">ID</th>
+																	<th scope="col">Name</th>
+																	<th scope="col">Status</th>
+																	<th scope="col">Delete</th>
+																</tr>
+															</thead>
+															<tbody>
+
+																	<?php
+																	//&#3652;&#3615;&#3621;&#3660;&#3648;&#3594;&#3639;&#3656;&#3629;&#3617;&#3605;&#3656;&#3629;&#3585;&#3633;&#3610; database &#3607;&#3637;&#3656;&#3648;&#3619;&#3634;&#3652;&#3604;&#3657;&#3626;&#3619;&#3657;&#3634;&#3591;&#3652;&#3623;&#3657;&#3585;&#3656;&#3629;&#3609;&#3627;&#3609;&#3657;&#3634;&#3609;&#3657;&#3637;
+
+																	$sql="SELECT * FROM pole ";			
+																	$result=mysqli_query($db,$sql); 
+																	// echo $sql;
+																	if(mysqli_num_rows($result) > 0){
+																		while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
+																		$pole_id=$row['pole_id'];
+																		$pole_name=$row['pole_name'];
+																		$pole_stat=$row['pole_stat'];
+																		
+																	
+																		echo "<tr>";   
+																			echo "<td>" .$row['pole_id'] .  "</td> ";
+																			echo "<td>" .$row['pole_name'] .  "</td> ";
+																			echo "<td>" .$row['pole_stat'] .  "</td> ";
+																			echo "<td><a href=\"delete.php?pole_id=".$pole_id."\">Delete</a></td>\n";
+																					
+																		} 
+																	}
+																	?>
+																</tr>
+															</tbody>
+														</table>
+														
+														<div class="card-action">
+															<button class="btn btn-success">Submit</button>
+															<button class="btn btn-danger">Cancel</button>
+														</div>	
+													</div>	
+												</div>
+											</div>
+										</div>	
+									
+						
+						
+						
 					
-						
-						
-					</div>
 				</div>
 			</div>
 				<footer class="footer">
@@ -278,7 +221,6 @@
 			</div>
 		</div>
 	</div>
-	
 </body>
 <script src="assets/js/core/jquery.3.2.1.min.js"></script>
 <script src="assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
@@ -322,6 +264,7 @@
 	});
 </script>
 </html>
+
 <?php
 
 function get_ran_str($len = 5){

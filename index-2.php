@@ -1,4 +1,6 @@
 <?php	
+/*
+	include("php/config.php");
 	include("php/config.php");
 	$infostr="";
 	$login_sucess=false;
@@ -37,7 +39,8 @@
 		$login_sucess=false;
 		$infostr="Invalid User Name or Password";
 		header("Location: login.php?infostr=".$infostr);	
-	}			
+	}
+*/	
 
 ?>
 <!DOCTYPE html>
@@ -50,8 +53,55 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
 	<link rel="stylesheet" href="assets/css/ready.css">
 	<link rel="stylesheet" href="assets/css/demo.css">
+	<style>
+		body, html { 
+			height: 100%; 
+			overflow: hidden; 
+			padding: 0; 
+			margin: 0; 
+		}
+
+		.page {
+		  top: 0; 
+		  left: 0; 
+		  width: 100%; 
+		  min-height: 100%; 
+		  position: absolute; 
+		  display: none; 
+		  overflow: hidden;
+		  border: 0;
+		}
+
+		.currentPage { 
+		  display: block; 
+		}
+	</style>	
 </head>
 <body>
+	<script>
+		var TIME_PER_PAGE = 5000;
+		window.onload = function() {
+			var pages = document.querySelectorAll('.page'),
+				numPages = pages ? pages.length : 0;
+				i = -1;
+
+			function nextPage() {
+				if (i >= 0)
+					pages[i].classList.remove('currentPage');
+
+				i = (i + 1) % numPages;
+				if (i >= numPages-1)
+					i=0; 					
+				pages[i].classList.add('currentPage');
+				if (i < numPages - 1)			
+				  setTimeout(nextPage, TIME_PER_PAGE);
+				
+			}
+
+			nextPage();
+		}
+	</script>
+
 	<div class="wrapper">
 		<div class="main-header">
 			<div class="logo-header">
@@ -107,29 +157,25 @@
 				<div class="scrollbar-inner sidebar-wrapper">
 					<ul class="nav">
 						<li class="nav-item active">
-							<?php	
-								echo "	<a href=\"dash.php?ran=".$ran."\">"; 
-								echo "	<i class=\"la la-users\"></i>";
-								echo "	User";
-								echo "	</a>";
-							?>
+							<a href="dash.php?ran=".$ran."">
+								<i class="la la-users"></i>
+								<p>User</p>
+								<span class="badge badge-count">5</span>
+							</a>
 						</li>
 						<li class="nav-item">
-							<?php	
-								echo "	<a href=\"report.php?ran=".$ran."\">"; 
-								echo "	<i class=\"la la-newspaper-o\"></i>";
-								echo "	Report";
-								echo "	</a>";
-							?>
+							<a href="report.php?ran=".$ran."">
+								<i class="la la-newspaper-o"></i>
+								<p>Report</p>
+								<span class="badge badge-count">14</span>
+							</a>
 						</li>
 						<li class="nav-item">
-							<?php	
-								echo "	<a href=\"setting.php?ran=".$ran."\">"; 
-								echo "	<i class=\"la la-keyboard-o\"></i>";
-								echo "	System Setting";
-								echo "	</a>";
-							?>
-							
+							<a href="setting.php?ran=".$ran."">
+								<i class="la la-keyboard-o"></i>
+								<p>System Setting</p>
+								<span class="badge badge-count">50</span>
+							</a>
 						</li>
 						
 						
@@ -137,6 +183,7 @@
 				</div>
 			</div>
 			<div class="main-panel">
+			<div class="page">
 				<div class="content">
 					<div class="container-fluid">
 						<h4 class="page-title">Commu. Pole</h4>
@@ -240,9 +287,75 @@
 						</div>
 					
 						
-						
-					</div>
+					</div>	
 				</div>
+				
+			  </div>
+			  <div class="page">
+				<div class="content">
+					<div class="container-fluid">
+						
+						<div class="row">
+							
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-header">
+										<h4 class="card-title">POLE-001 Bang Bor</h4>
+									<!-- 	<p class="card-category">Latitude</p> -->
+									</div>
+									<div class="card-body">
+									<div class="user-box">
+										
+										<div class="u-text">
+											<h4></h4>
+											
+										</div>
+										<div class="u-text">
+											<h4></h4>
+											
+										</div>
+										
+										<div class="u-text">
+											<h4>Status Alarm</h4>
+											<p class="text-muted">1.Fire Alarm</p>
+											<p class="text-muted">2.Switch</p>
+										</div>
+										<div ><img src="assets/img/pole-000.png"></div>
+										
+
+										
+										<div class="u-text">
+											<h4>Status</h4>
+											<p class="text-muted">LED : Normal</p>
+											<p class="text-muted">LED Battery : Normal</p>
+											<p class="text-muted">Fire Alarm : On</p>
+											<p class="text-muted">Switch : On</p>
+											<p class="text-muted">Camera1 : Normal</p>
+											<p class="text-muted">Camera2 : Normal</p>
+											<p class="text-muted">Speaker : Normal</p>
+											<p class="text-muted">Temp : 35</p>
+											<p class="text-muted">Humid : 82%</p>
+											<p class="text-muted">PM2.5 : 8.5 ppm</p>																						
+											<p class="text-muted">LED Display : Normal</p>
+											<p class="text-muted">ONU : Normal</p>
+											<p class="text-muted">ATA : Normal</p>
+											<p class="text-muted">IOT GW : Normal</p>
+											<p class="text-muted">POE Switch : Normal</p>
+											<p class="text-muted">Solar PV : Normal</p>
+											<p class="text-muted">Solar Battery : Normal</p>
+											<p class="text-muted">AC Power In : Normal</p>
+											<p class="text-muted">Fan : Normal</p>
+											
+										</div>
+									</div>	
+								</div>
+							</div>
+							</div>
+						</div>															
+					</div>
+				</div>			  
+			  </div>
+			  <div class="page">End</div>
 			</div>
 				<footer class="footer">
 					<div class="container-fluid">

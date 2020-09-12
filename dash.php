@@ -1,44 +1,22 @@
-<?php	
+<?php
 	include("php/config.php");
-	$infostr="";
-	$login_sucess=false;
 	
-	//if login
-	if(isset($_POST['user_name'])){
+	if(isset($_GET['ran'])){$ran=$_GET['ran'];}
+	if(isset($_POST['ran'])){$ran=$_POST['ran'];}
+	if(isset($_GET['pole_name'])){$pole_name=$_GET['pole_name'];}
+	if(isset($_POST['pole_name'])){$pole_name=$_POST['pole_name'];}
+	
+	$sqlx="SELECT * FROM user WHERE usr_ran='".$ran."';";
+	$result=mysqli_query($db, $sqlx); 
+	if(mysqli_num_rows($result) > 0){
+		$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
+		$usr_type=$row['usr_type'];
+		$usr_name=$row['usr_name'];
+		if($usr_type=="admin"){
 		
-		$usr_name=$_POST['user_name'];
-		$pwd=$_POST['password'];
-		$sql="select * from user where usr_name='". $usr_name. "' AND usr_pwd='". $pwd ."';";
-					
-		$result=mysqli_query($db,$sql);			
-		if(mysqli_num_rows($result) > 0){	
-			$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-			$usr_id=$row['usr_id'];
-			$usr_type=$row['usr_type'];
-			$login_sucess=true;	
-			$ran=get_ran10();
-
-			$sql="update user SET ".
-					" usr_ran='". $ran ."'".
-					" Where usr_id='".$usr_id ."'";
-			$updt=mysqli_query($db, $sql);			
-		}else{
-			
-			echo "<script language=\"javascript\">";
-			echo "alert(\"Invalid  User Name or Password\")";
-			echo "</script>";	
-			
-			$infostr="Invalid User Name or Password";
-			header("Location: login.php?infostr=".$infostr);
+		
 		}
-				
-	//if  send page	
-	}else{
-		$login_sucess=false;
-		$infostr="Invalid User Name or Password";
-		header("Location: login.php?infostr=".$infostr);	
-	}			
-
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -55,7 +33,7 @@
 	<div class="wrapper">
 		<div class="main-header">
 			<div class="logo-header">
-				<a href="dash.php" class="logo">
+				<a href="index.php" class="logo">
 					<img align ='center' width="180" height="60"src="assets/img/tot-inno.png">	
 				</a>
 				<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,7 +109,6 @@
 							?>
 							
 						</li>
-						
 						
 					</ul>
 				</div>
@@ -229,10 +206,10 @@
 										Map of the distribution of users around the world</p>
 									</div>
 									<div class="card-body">
-											
-									        <iframe target="_blank" src="http://mkss.co.th/pole/php/map.php?ran=".$ran."" width="100%" height="500" style="border:none;">
-</iframe>
+									<?php
 										
+											echo "<iframe src=\"http://mkss.co.th/pole/php/map.php\" width=\"100%\" height=\"500\" style=\"border-style: none;\"></iframe>";
+									?>												
 									</div>
 								</div>
 							</div>

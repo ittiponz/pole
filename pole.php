@@ -1,44 +1,22 @@
-<?php	
+<?php
 	include("php/config.php");
-	$infostr="";
-	$login_sucess=false;
 	
-	//if login
-	if(isset($_POST['user_name'])){
+	if(isset($_GET['ran'])){$ran=$_GET['ran'];}
+	if(isset($_POST['ran'])){$ran=$_POST['ran'];}
+	if(isset($_GET['pole_name'])){$pole_name=$_GET['pole_name'];}
+	if(isset($_POST['pole_name'])){$pole_name=$_POST['pole_name'];}
+	
+	$sqlx="SELECT * FROM user WHERE usr_ran='".$ran."';";
+	$result=mysqli_query($db, $sqlx); 
+	if(mysqli_num_rows($result) > 0){
+		$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
+		$usr_type=$row['usr_type'];
+		$usr_name=$row['usr_name'];
+		if($usr_type=="admin"){
 		
-		$usr_name=$_POST['user_name'];
-		$pwd=$_POST['password'];
-		$sql="select * from user where usr_name='". $usr_name. "' AND usr_pwd='". $pwd ."';";
-					
-		$result=mysqli_query($db,$sql);			
-		if(mysqli_num_rows($result) > 0){	
-			$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-			$usr_id=$row['usr_id'];
-			$usr_type=$row['usr_type'];
-			$login_sucess=true;	
-			$ran=get_ran10();
-
-			$sql="update user SET ".
-					" usr_ran='". $ran ."'".
-					" Where usr_id='".$usr_id ."'";
-			$updt=mysqli_query($db, $sql);			
-		}else{
-			
-			echo "<script language=\"javascript\">";
-			echo "alert(\"Invalid  User Name or Password\")";
-			echo "</script>";	
-			
-			$infostr="Invalid User Name or Password";
-			header("Location: login.php?infostr=".$infostr);
+		
 		}
-				
-	//if  send page	
-	}else{
-		$login_sucess=false;
-		$infostr="Invalid User Name or Password";
-		header("Location: login.php?infostr=".$infostr);	
-	}			
-
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -52,10 +30,32 @@
 	<link rel="stylesheet" href="assets/css/demo.css">
 </head>
 <body>
+		<?php  
+
+			$sql="SELECT * FROM pole WHERE pole_name = '$pole_name'";			
+			$result=mysqli_query($db,$sql);
+			if(mysqli_num_rows($result) > 0){
+				$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
+				$pole_id=$row['pole_id'];
+				$pole_name=$row['pole_name'];
+				$pole_lat=$row['pole_lat'];
+				$pole_lon=$row['pole_lon'];
+			}
+			$sqlx="SELECT * FROM pole WHERE pole_name = '$pole_name'";			
+			$resultx=mysqli_query($db,$sqlx);
+			if(mysqli_num_rows($resultx) > 0){
+				$rowx = mysqli_fetch_array($result,MYSQLI_ASSOC);
+				$pole_id=$rowx['pole_id'];
+				$pole_name=$rowx['pole_name'];
+				$pole_lat=$rowx['pole_lat'];
+				$pole_lon=$rowx['pole_lon'];
+			}
+		?>
+		
 	<div class="wrapper">
 		<div class="main-header">
 			<div class="logo-header">
-				<a href="dash.php" class="logo">
+				<a href="index.php" class="logo">
 					<img align ='center' width="180" height="60"src="assets/img/tot-inno.png">	
 				</a>
 				<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,21 +81,21 @@
 						<li class="nav-item dropdown hidden-caret"></li>
 						<li class="nav-item dropdown hidden-caret"></li>
 						<li class="nav-item dropdown">
-							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false"> <img src="assets/img/logo_admin.jpg" alt="user-img" width="36" class="img-circle"><span ><?php echo $usr_name ?></span></span> </a>
+							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false"> <img src="assets/img/logo_admin.jpg" alt="user-img" width="36" class="img-circle"><span >UserName</span></span> </a>
 							<ul class="dropdown-menu dropdown-user">
 								<li>
 									<div class="user-box">
 										<div class="u-img"><img src="assets/img/logo_admin.jpg" alt="user"></div>
 										<div class="u-text">
-											<h4><?php echo $usr_name ?></h4>
-											<p class="text-muted"><?php echo $usr_type ?></p></div>
+											<h4>UserName</h4>
+											<p class="text-muted">UserType</p></div>
 										</div>
 									</li>
 								
 									<div class="dropdown-divider"></div>
 									<a class="dropdown-item" href="#"><i class="ti-settings"></i> Account Setting</a>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="login.php"><i class="fa fa-power-off"></i> Logout</a>
+									<a class="dropdown-item" href="#"><i class="fa fa-power-off"></i> Logout</a>
 								</ul>
 								<!-- /.dropdown-user -->
 							</li>
@@ -106,32 +106,27 @@
 			<div class="sidebar">
 				<div class="scrollbar-inner sidebar-wrapper">
 					<ul class="nav">
+						<li class="nav-item">
+							<a href="index.php">
+								<i class="la la-users"></i>
+								<p>User</p>
+								<span class="badge badge-count">5</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="report.php">
+								<i class="la la-newspaper-o"></i>
+								<p>Report</p>
+								<span class="badge badge-count">14</span>
+							</a>
+						</li>
 						<li class="nav-item active">
-							<?php	
-								echo "	<a href=\"dash.php?ran=".$ran."\">"; 
-								echo "	<i class=\"la la-users\"></i>";
-								echo "	User";
-								echo "	</a>";
-							?>
+							<a href="setting.php">
+								<i class="la la-keyboard-o"></i>
+								<p>System Setting</p>
+								<span class="badge badge-count">50</span>
+							</a>
 						</li>
-						<li class="nav-item">
-							<?php	
-								echo "	<a href=\"report.php?ran=".$ran."\">"; 
-								echo "	<i class=\"la la-newspaper-o\"></i>";
-								echo "	Report";
-								echo "	</a>";
-							?>
-						</li>
-						<li class="nav-item">
-							<?php	
-								echo "	<a href=\"setting.php?ran=".$ran."\">"; 
-								echo "	<i class=\"la la-keyboard-o\"></i>";
-								echo "	System Setting";
-								echo "	</a>";
-							?>
-							
-						</li>
-						
 						
 					</ul>
 				</div>
@@ -139,108 +134,84 @@
 			<div class="main-panel">
 				<div class="content">
 					<div class="container-fluid">
-						<h4 class="page-title">Commu. Pole</h4>
-						<div class="row">
-							<div class="col-md-3">
-								<div class="card card-stats card-danger">
-									<div class="card-body">
-										<div class="row">
-											<div class="col-5">
-												<div class="icon-big text-center">
-													<i class="la la-line-chart"></i>
-												</div>
-											</div>
-											<div class="col-7 d-flex align-items-center">
-												<div class="numbers">
-													<p class="card-category">Critical</p>
-													<h4 class="card-title">3</h4>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-3">
-								<div class="card card-stats card-warning">
-									<div class="card-body ">
-										<div class="row">
-											<div class="col-5">
-												<div class="icon-big text-center">
-													<i class="la la-bell"></i>
-												</div>
-											</div>
-											<div class="col-7 d-flex align-items-center">
-												<div class="numbers">
-													<p class="card-category">Warning</p>
-													<h4 class="card-title">294</h4>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-3">
-								<div class="card card-stats card-success">
-									<div class="card-body ">
-										<div class="row">
-											<div class="col-5">
-												<div class="icon-big text-center">
-													<i class="la la-bar-chart"></i>
-												</div>
-											</div>
-											<div class="col-7 d-flex align-items-center">
-												<div class="numbers">
-													<p class="card-category">Normal</p>
-													<h4 class="card-title">345</h4>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="col-md-3">
-								<div class="card card-stats card-primary">
-									<div class="card-body ">
-										<div class="row">
-											<div class="col-5">
-												<div class="icon-big text-center">
-													<i class="la la-check-circle"></i>
-												</div>
-											</div>
-											<div class="col-7 d-flex align-items-center">
-												<div class="numbers">
-													<p class="card-category">total</p>
-													<h4 class="card-title">576</h4>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
 						
+						<div class="row">
+							
 							<div class="col-md-12">
 								<div class="card">
 									<div class="card-header">
-										<h4 class="card-title">SmartPole Map</h4>
-										<p class="card-category">
-										Map of the distribution of users around the world</p>
+										<h4 class="card-title"><?php $pole_name ?></h4>
+									<!-- 	<p class="card-category">Latitude</p> -->
 									</div>
 									<div class="card-body">
-											
-									        <iframe target="_blank" src="http://mkss.co.th/pole/php/map.php?ran=".$ran."" width="100%" height="500" style="border:none;">
-</iframe>
+									<div class="user-box">
 										
-									</div>
+										<div class="u-text">
+											<h4></h4>
+											
+										</div>
+										<div class="u-text">
+											<h4></h4>
+											
+										</div>
+										
+										<div class="u-text">
+											<h4>Status Alarm</h4>
+											<p class="text-muted">1.Fire Alarm</p>
+											<p class="text-muted">2.Switch</p>
+										</div>
+										<div class="u-img"><img src="assets/img/pole.png"></div>
+										
+										<div class="u-text">
+											<h4></h4>
+											
+										</div>
+										
+										<div class="u-text">
+											<h4>Status</h4>
+											<p class="text-muted">LED : Normal</p>
+											<p class="text-muted">LED Battery : Normal</p>
+											<p class="text-muted">Fire Alarm : On</p>
+											<p class="text-muted">Switch : On</p>
+											<p class="text-muted">Camera1 : Normal</p>
+											<p class="text-muted">Camera2 : Normal</p>
+											<p class="text-muted">Speaker : Normal</p>
+											<p class="text-muted">Temp : 35</p>
+											<p class="text-muted">Humid : 82%</p>
+											<p class="text-muted">PM2.5 : 8.5 ppm</p>											
+										</div>
+										<div class="u-text">
+											<h4></h4>
+											
+										</div>
+										<div class="u-text">
+											<h4></h4>
+											
+										</div>
+										<div class="u-text">
+											<h4>Status</h4>
+											
+											<p class="text-muted">LED Display : Normal</p>
+											<p class="text-muted">ONU : Normal</p>
+											<p class="text-muted">ATA : Normal</p>
+											<p class="text-muted">IOT GW : Normal</p>
+											<p class="text-muted">POE Switch : Normal</p>
+											<p class="text-muted">Solar PV : Normal</p>
+											<p class="text-muted">Solar Battery : Normal</p>
+											<p class="text-muted">AC Power In : Normal</p>
+											<p class="text-muted">Fan : Normal</p>
+											
+										</div>
+									</div>	
 								</div>
 							</div>
-							
-						</div>
+							</div>
+						</div>	
+									
+						
+						
+						
 					
-						
-						
 					</div>
 				</div>
 			</div>
@@ -278,7 +249,6 @@
 			</div>
 		</div>
 	</div>
-	
 </body>
 <script src="assets/js/core/jquery.3.2.1.min.js"></script>
 <script src="assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
@@ -322,30 +292,3 @@
 	});
 </script>
 </html>
-<?php
-
-function get_ran_str($len = 5){
-  $charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-  $base = strlen($charset);
-  $result = '';
-
-  $now = explode(' ', microtime())[1];
-  while ($now >= $base){
-    $i = $now % $base;
-    $result = $charset[$i] . $result;
-    $now /= $base;
-  }
-  return substr($result, -5);
-}
-
-function get_ran10($length = 10) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
-}
-
-?>
